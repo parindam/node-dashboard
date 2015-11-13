@@ -485,7 +485,7 @@ digiclock {
 
 
 /**********DONUT CHARTS STYLES**********/
-#load {
+#april {
 	width: 11.313em;
 	height: 11.313em;
 	-moz-border-radius: 5px;
@@ -495,7 +495,7 @@ digiclock {
 	margin:auto;
 }
 
-#space {
+#may {
 	width: 11.313em;
 	height: 11.313em;
 	-moz-border-radius: 5px;
@@ -504,7 +504,15 @@ digiclock {
 	background-position: center center;
 	margin:auto;
 }
-
+#june {
+	width: 11.313em;
+	height: 11.313em;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom: 1.063em;
+	background-position: center center;
+	margin:auto;
+}
 
 /**********LINE AND BARS**********/
 

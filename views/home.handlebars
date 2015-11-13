@@ -1,1 +1,563 @@
-<h1>Example App: Home</h1>
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<title>Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="Carlos Alvarez - Alvarez.is">
+
+<!-- Le styles -->
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+<link href="assets/css/font-style.css" rel="stylesheet">
+<link href="assets/css/flexslider.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+
+<style type="text/css">
+	body {
+		padding-top: 60px;
+	}
+	g.highcharts-legend-item {
+    display: none;
+}
+div#links {
+    height: 241px;
+    overflow-x: auto;
+}
+div#links::-webkit-scrollbar {
+    width: 12px;
+}
+
+div#links::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+
+div#links::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+​
+</style>
+
+<script src="assets/js/socket.io-1.3.7.js"></script>
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+
+      <!-- Le fav and touch icons -->
+      <link rel="shortcut icon" href="assets/ico/favicon.ico">
+      <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+      <!-- Google Fonts call. Font Used Open Sans & Raleway -->
+      <link href="http://fonts.googleapis.com/css?family=Raleway:400,300" rel="stylesheet" type="text/css">
+      <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+      <script type="text/javascript">
+
+      	$(document).ready(function () {
+
+      		$("#btn-blog-next").click(function () {
+      			$('#blogCarousel').carousel('next')
+      		});
+      		$("#btn-blog-prev").click(function () {
+      			$('#blogCarousel').carousel('prev')
+      		});
+
+      		$("#btn-client-next").click(function () {
+      			$('#clientCarousel').carousel('next')
+      		});
+      		$("#btn-client-prev").click(function () {
+      			$('#clientCarousel').carousel('prev')
+      		});
+      		
+      	});
+
+      	$(window).load(function(){
+
+      		$('.flexslider').flexslider({
+      			animation: "slide",
+      			slideshow: true,
+      			start: function(slider){
+      				$('body').removeClass('loading');
+      			}
+      		});  
+
+      		
+      		
+
+      	});
+
+      </script>
+
+
+      
+  </head>
+  <body>
+  	
+  	<!-- NAVIGATION MENU -->
+
+  	<div class="navbar-nav navbar-inverse navbar-fixed-top">
+  		<div class="container">
+  			<div class="navbar-header">
+  				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+  					<span class="icon-bar"></span>
+  					<span class="icon-bar"></span>
+  					<span class="icon-bar"></span>
+  				</button>
+  				<a class="navbar-brand" href="/"><img src="assets/img/logo30.png" alt=""> Dashboard</a>
+  			</div> 
+  			<div class="navbar-collapse collapse">
+  				<ul class="nav navbar-nav">
+  					<li class="active"><a href="/"><i class="icon-home icon-white"></i> Home</a></li>
+  					
+
+  				</ul>
+          <form class="form-inline" action="/search" style="float:right;margin:10px 0;">
+ 
+  <div class="form-group" >
+   
+    <input type="text`" class="form-control" name="search" id="search" placeholder="">
+  </div>
+  <button type="submit" class="btn btn-default">Search</button>
+</form>
+  			</div><!--/.nav-collapse -->
+
+  		</div>
+  	</div>
+
+  	<div class="container">
+
+  		<!-- FIRST ROW OF BLOCKS -->     
+  		<div class="row">
+
+  			<!-- USER PROFILE BLOCK -->
+  			<div class="col-sm-3 col-lg-3">
+  				<div class="dash-unit">
+  					<dtitle>User Profile</dtitle>
+  					<hr>
+  					<div class="thumbnail">
+  						<img src="assets/img/face80x80.jpg" alt="Marcel Newman" class="img-circle">
+  					</div><!-- /thumbnail -->
+  					<h1>Marcel Newman</h1>
+  					<h3>Madrid, Spain</h3>
+  					<br>
+  					<div class="info-user">
+  						<span aria-hidden="true" class="li_user fs1"></span>
+  						<span aria-hidden="true" class="li_settings fs1"></span>
+  						<span aria-hidden="true" class="li_mail fs1"></span>
+  						<span aria-hidden="true" class="li_key fs1"></span>
+  					</div>
+  				</div>
+  			</div>
+
+  			<div class="col-sm-6 col-lg-6">
+          <div class="dash-unit">
+            <dtitle>Daily SKU Real time</dtitle>
+            <hr>
+              <div id="sku-daily" style="height:250px"></div>
+          </div>
+        </div>
+
+  			<!-- DONUT CHART BLOCK -->
+  		
+  			
+  			<div class="col-sm-3 col-lg-3">
+
+  				<!-- LOCAL TIME BLOCK -->
+  				<div class="half-unit">
+  					<dtitle>Local Time</dtitle>
+  					<hr>
+  					<div class="clockcenter">
+  						<digiclock>12:45:25</digiclock>
+  					</div>
+  				</div>
+
+  				<!-- SERVER UPTIME -->
+  				<div class="half-unit">
+  					<dtitle>Server Uptime</dtitle>
+  					<hr>
+  					<div class="cont">
+  						<p><img src="assets/img/up.png" alt=""> <bold>Up</bold> | 356ms.</p>
+  					</div>
+  				</div>
+
+  			</div>
+  		</div><!-- /row -->
+  		
+  		
+  		<!-- SECOND ROW OF BLOCKS -->     
+  		<div class="row">
+  			<div class="col-sm-3 col-lg-3">
+  				<!-- MAIL BLOCK -->
+  				<div class="dash-unit">
+  					<dtitle>Links</dtitle>
+  					<hr>
+            <div id="links">
+            <ul>
+            {{#data}}
+              <li><a href="#" title="{{.}}">{{.}}</a></li>
+              {{/data}}
+              </ul>
+              </div>
+  				</div><!-- /dash-unit -->
+  			</div><!-- /span3 -->
+
+  			
+
+  			
+  			<div class="col-sm-6 col-lg-6">
+          <div class="dash-unit">
+            <dtitle>Monthly SKU</dtitle>
+            <hr>
+             <div id="sku-monthly" style="height:250px"></div>
+          </div>
+        </div>
+  			<div class="col-sm-3 col-lg-3">
+          <div class="dash-unit">
+            <dtitle>Report : SKU 3</dtitle>
+            <hr>
+            <table cellpadding="5">
+              <tr>
+                <td>Validated</td><td>Yes / No</td>
+              </tr>
+              <tr>
+                <td>Prediction</td><td>Yes / No</td>
+              </tr>
+              <tr>
+                <td>Validation Date</td><td>11th November 2015</td>
+              </tr>
+              <tr>
+                <td>Current SKU</td><td>SKU 3</td>
+              </tr>
+              <tr>
+                <td>Predicition SKU</td><td>10th November 2015</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+         
+  		</div><!-- /row -->
+  		
+  		
+  		<!-- THIRD ROW OF BLOCKS -->     
+  		<div class="row">
+  	
+
+  			<div class="col-sm-3 col-lg-3">
+
+  				<!-- LIVE VISITORS BLOCK -->     
+  				<div class="half-unit">
+  					<dtitle>Live Visitors</dtitle>
+  					<hr>
+  					<div class="cont">
+  						<p><bold>388</bold></p>
+  						<p><img src="assets/img/up-small.png" alt=""> 412 Max. | <img src="assets/img/down-small.png" alt=""> 89 Min.</p>
+  					</div>
+  				</div>
+  				
+  				<!-- PAGE VIEWS BLOCK -->     
+  				<div class="half-unit">
+  					<dtitle>Page Views</dtitle>
+  					<hr>
+  					<div class="cont">
+  						<p><bold>145.0K</bold></p>
+  						<p><img src="assets/img/up-small.png" alt=""> 23.88%</p>
+  					</div>
+  				</div>
+  			</div>
+        <!-- DONUT CHART BLOCK -->
+        <div class="col-sm-3 col-lg-3">
+          <div class="dash-unit">
+            <dtitle>SKU Prediction Efficiency - April</dtitle>
+            <hr>
+            <div id="april"></div>
+            <h2 id="aprilLabel"></h2>
+          </div>
+        </div>
+  		 <div class="col-sm-3 col-lg-3">
+          <div class="dash-unit">
+            <dtitle>SKU Prediction Efficiency - May</dtitle>
+            <hr>
+            <div id="may"></div>
+            <h2 id="mayLabel"></h2>
+          </div>
+        </div>
+         <div class="col-sm-3 col-lg-3">
+          <div class="dash-unit">
+            <dtitle>SKU Prediction Efficiency - June</dtitle>
+            <hr>
+            <div id="june"></div>
+            <h2 id="juneLabel"></h2>
+          </div>
+        </div>
+  		</div><!-- /row -->
+  		
+  		
+  		
+  			
+  			
+  			
+  		</div> <!-- /container -->
+  		<div id="footerwrap">
+  			<footer class="clearfix"></footer>
+  			<div class="container">
+  				<div class="row">
+  					<div class="col-sm-12 col-lg-12">
+  						<p><img src="assets/img/logo.png" alt=""></p>
+  						<p>Copyright 2015</p>
+  					</div>
+
+  				</div><!-- /row -->
+  			</div><!-- /container -->		
+  		</div><!-- /footerwrap -->
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+    
+  
+    
+    <!-- NOTY JAVASCRIPT -->
+    <script type="text/javascript" src="assets/js/noty/jquery.noty.js"></script>
+    <script type="text/javascript" src="assets/js/noty/layouts/top.js"></script>
+    <script type="text/javascript" src="assets/js/noty/layouts/topLeft.js"></script>
+    <script type="text/javascript" src="assets/js/noty/layouts/topRight.js"></script>
+    <script type="text/javascript" src="assets/js/noty/layouts/topCenter.js"></script>
+    
+    <!-- You can add more layouts if you want -->
+    <script type="text/javascript" src="assets/js/noty/themes/default.js"></script>
+    <!-- <script type="text/javascript" src="assets/js/dash-noty.js"></script> This is a Noty bubble when you init the theme-->
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="assets/js/jquery.flexslider.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="assets/js/admin.js"></script>
+    
+    <script type="text/javascript">
+    	
+    	$(document).ready(function() {
+
+    		function generateNumber(min, max) {
+    			min = typeof min !== 'undefined' ? min : 1;
+    			max = typeof max !== 'undefined' ? max : 100;
+    			
+    			return Math.floor((Math.random() * max) + min);
+    		}
+    		
+    		
+
+
+    		var socket = io.connect('http://localhost:3000');
+    		socket.on('data', function (data) {
+
+console.log(data)
+              var chart,
+          categories ,
+          serie1 ,
+          serie2,
+          $aapls;
+          
+          categories = data.categorie.categories;
+          serie1 = data.categorie.serie1;
+          serie2 = data.categorie.serie2;
+
+          april = data.bandwidth;
+          may = data.diskSpace;
+          june = data.diskSpace;
+          aprilLabel = april[0].y;
+          mayLabel = may[0].y;
+          juneLabel = june[0].y;
+
+
+          $("#aprilLabel").html(aprilLabel + "%");
+          $("#mayLabel").html(mayLabel + "%");
+          $("#juneLabel").html(juneLabel + "%");
+
+            var daily = data.skus.daily;
+            var monthly = data.skus.monthly;
+
+             $('#sku-daily').highcharts({
+                  chart: {
+                      type: 'column',
+                      backgroundColor: null
+                  },
+                   title: {
+                      text: ''
+                  },
+                  xAxis: {
+                      categories: ['suk1', 'suk2','suk3','suk4','suk5','suk6','suk7','suk8','suk9','suk10','suk11','suk12','suk13','suk14','suk15','suk16','suk17','suk18','suk19','suk20','suk21','suk22','suk23']
+                  },
+                  tooltip: {
+                    formatter: function() { 
+                 
+                      return this.key +': '+ this.y;
+                      
+                    }   
+                  },
+                  series: [{
+                            dataLabels: {
+                        enabled: false,
+                        color: '#000000',
+                        connectorColor: '#000000'
+                      },
+                      data: daily
+                  }]
+              });
+  
+          $('#sku-monthly').highcharts({
+                  chart: {
+                      type: 'column',
+                      backgroundColor: null
+                  },
+                   title: {
+                      text: ''
+                  },
+                  xAxis: {
+                      categories: ['suk1', 'suk2','suk3','suk4','suk5','suk6','suk7','suk8','suk9','suk10','suk11','suk12','suk13','suk14','suk15','suk16','suk17','suk18','suk19','suk20','suk21','suk22','suk23']
+                  },
+                   tooltip: {
+                    formatter: function() { 
+                 
+                      return this.key +': '+ this.y;
+                      
+                    }   
+                  },
+                  series: [{
+                            dataLabels: {
+                        enabled: false,
+                        color: '#000000',
+                        connectorColor: '#000000'
+                      },
+                      data: monthly
+                  }]
+              });
+    		
+    			info = new Highcharts.Chart({
+    				chart: {
+    					renderTo: 'april',
+    					margin: [0, 0, 0, 0],
+    					backgroundColor: null,
+    					plotBackgroundColor: 'none',
+    					
+    				},
+    				
+    				title: {
+    					text: null
+    				},
+
+    				tooltip: {
+    					formatter: function() { 
+    						return this.point.name +': '+ this.y +' %';
+    						
+    					} 	
+    				},
+    				series: [
+    				{
+    					borderWidth: 2,
+    					borderColor: '#F1F3EB',
+    					shadow: false,	
+    					type: 'pie',
+    					name: 'Income',
+    					innerSize: '65%',
+    					data: april,
+    					dataLabels: {
+    						enabled: false,
+    						color: '#000000',
+    						connectorColor: '#000000'
+    					}
+    				}]
+    			});
+
+
+info = new Highcharts.Chart({
+            chart: {
+              renderTo: 'june',
+              margin: [0, 0, 0, 0],
+              backgroundColor: null,
+              plotBackgroundColor: 'none',
+              
+            },
+            
+            title: {
+              text: null
+            },
+
+            tooltip: {
+              formatter: function() { 
+                return this.point.name +': '+ this.y +' %';
+                
+              }   
+            },
+            series: [
+            {
+              borderWidth: 2,
+              borderColor: '#F1F3EB',
+              shadow: false,  
+              type: 'pie',
+              name: 'Income',
+              innerSize: '65%',
+              data: june,
+              dataLabels: {
+                enabled: false,
+                color: '#000000',
+                connectorColor: '#000000'
+              }
+            }]
+          });
+
+    			info = new Highcharts.Chart({
+    				chart: {
+    					renderTo: 'may',
+    					margin: [0, 0, 0, 0],
+    					backgroundColor: null,
+    					plotBackgroundColor: 'none',
+    					
+    				},
+    				
+    				title: {
+    					text: null
+    				},
+
+    				tooltip: {
+    					formatter: function() { 
+    						return this.point.name +': '+ this.y +' %';
+    						
+    					} 	
+    				},
+    				series: [
+    				{
+    					borderWidth: 2,
+    					borderColor: '#F1F3EB',
+    					shadow: false,	
+    					type: 'pie',
+    					name: 'SiteInfo',
+    					innerSize: '65%',
+    					data: may,
+    					dataLabels: {
+    						enabled: false,
+    						color: '#000000',
+    						connectorColor: '#000000'
+    					}
+    				}]
+    			});
+
+    			
+
+
+
+
+});
+
+
+
+
+});
+</script>
